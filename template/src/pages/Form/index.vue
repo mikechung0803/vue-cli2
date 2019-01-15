@@ -36,12 +36,6 @@
             <i></i>
           </li>
         </ul>
-        <ul class="form-like">
-          <li v-if="items.intro!==undefined">
-            <div class="me-text">选手简介<span>*</span></div>
-            <textarea name="intro" v-model.trim="formData.intro" class="me-con" placeholder="请描述一下吧~100字以内哦" maxlength="100"></textarea>
-          </li>
-        </ul>
       </div>
     </div>
     <div class="form-upload box">

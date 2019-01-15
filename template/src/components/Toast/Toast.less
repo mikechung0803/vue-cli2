@@ -1,0 +1,41 @@
+.toast-wrapper{
+    position: fixed;
+    top: 30%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 1005;
+    padding: 30px 10px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    border-radius: 24px;
+    background: rgba(0,0,0,.7);
+    min-width: 205px;
+    max-width: 300px;
+    color: #fff;
+    .icon{
+        width: 58px;
+        height: 58px;
+        i{
+            display: block;
+            width: 58px;
+            height: 58px;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .icon-success {
+            background-image: url('../../assets/popup-success.png');
+        }
+        .icon-warning {
+            background-image: url('../../assets/popup-warning.png');
+        }
+    }
+    .desc{
+        margin-top: 10px;
+        width: 300px;
+        text-align: center;
+        font-size: 26px;
+        line-height: 28px;
+    }
+}
