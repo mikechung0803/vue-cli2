@@ -176,9 +176,10 @@ module.exports = {
     'test/unit/setup.js': "unit && runner === 'jest'",
     'test/e2e/**/*': 'e2e',
     'src/router/**/*': 'router',
-    'src/sotre/**/*': 'vuex', //追加store目录
-    'src/pages/components/ProductList/**/*': 'vuex',
-    'src/pages/components/ShoppingCar/**/*': 'vuex'
+    'src/store/**/*': 'vuex', //追加store目录
+    'src/components/ProductList/**/*': 'vuex',
+    'src/components/ShoppingCar/**/*': 'vuex',
+    'src/pages/Vuex/**/*': 'vuex'
   },
   complete: function(data, { chalk }) {
     const green = chalk.green
