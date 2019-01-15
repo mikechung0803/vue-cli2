@@ -13,7 +13,7 @@ const resource = {
   js: {
     unify: '//wl.jd.com/unify.min.js',
     jssdk: 'static/js/jssdk.min.js',
-    bundle: 'static/js/jssdk.min.js',
+    bundle: 'static/js/bundle.min.js',
     // downloadAppPlugIn: "//st.360buyimg.com/m/js/2014/module/plugIn/downloadAppPlugIn_imk2.js",
     // jdwebm: "//h5.360buyimg.com/ws_js/jdwebm.js?v=STP1",
     // 'gia-html': "//gia.jd.com/m.html",
