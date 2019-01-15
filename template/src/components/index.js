@@ -2,12 +2,7 @@
  * @description 组件
  * @module components
  */
-{{#if_eq cssLoader "less"}}
 import 'style/global.less'
-{{/if_eq}}
-{{#if_eq cssLoader "scss"}}
-import 'style/global.scss'
-{{/if_eq}}
 import 'modules/jelly/jelly.js'
 import 'modules/jelly/jelly.css'
 import VueLazyLoad from 'vue-lazyload'

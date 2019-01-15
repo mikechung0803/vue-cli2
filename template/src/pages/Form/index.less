@@ -1,0 +1,176 @@
+.form-wrap{
+    ul {
+        list-style: none;
+    }
+    height:100%;
+    width:100%;
+    .form-information{
+        .form-me{
+            li{
+                height:102px;
+                border-bottom:1px dashed rgb(238,238,238); /*no*/
+                display: flex;
+                align-items: center;
+                &:first-child{
+                border-bottom:1px dashed rgb(238,238,238); /*no*/
+                }
+                &.editor{
+                    position: relative;
+                    &::after{
+                        content: '';
+                        position: absolute;
+                        right:0;
+                        top:40px;
+                        display: inline-block;
+                        width: 14px;
+                        height: 14px;
+                        border-top: 1px solid #242424; /*no*/
+                        border-right: 1px solid #242424; /*no*/
+                        transform: rotate(45deg);
+                        -webkit-transform: rotate(45deg);
+                        opacity:0.5;
+                    }
+                    input{
+                        padding-right:20px;
+                    }
+                }
+            }
+            .me-text{
+                color:#242424;
+                font-size: 26px;
+                width: 30%;
+            }
+            span{
+                color: red;
+                margin-left: 3px;
+                vertical-align: middle;
+            }
+            input{
+                flex: 1;
+                border:none;
+                text-align: right;
+                vertical-align:middle;
+                color: #919191;
+                padding-right: 10px;
+                &[disabled]{
+                    background-color: #fff;
+                }
+            }
+            .gender {
+                width: 100%;
+                position: relative;
+                display: flex;
+                &:after {
+                    content: "";
+                    position: absolute;
+                    width: 20px;
+                    height: 20px;
+                    box-sizing: border-box;
+                    border-width: 2px; /*no*/
+                    border-right: 2px solid #ccc; /*no*/
+                    border-bottom: 2px solid #ccc; /*no*/
+                    transform: rotate(-45deg);
+                    top: 0;
+                    bottom: 0;
+                    margin: auto;
+                    right: 2px;
+                }
+            }
+            select {
+                width: 96%;
+                box-sizing: border-box;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                -ms-appearance: none;
+                appearance: none;
+                border: none;
+                direction: rtl;
+                padding-right: 8px;
+                background-color: #fff;
+                color: #919191;
+            }
+        }
+    }
+    .form-upload{
+        .form-submit{
+            margin:auto;
+            width:383px;
+            height:117px;
+            line-height:117px;
+            text-align: center;
+            font-size: 28px;
+            color:#fff;
+            background: url('../../assets/btn-big.png') no-repeat;
+            background-size: 100% 100%;
+        }
+        .form-title{
+            padding-top:24px;
+            padding-bottom:54px;
+            font-size: 24px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            span {
+                color:#242424;
+            }
+            .checked{
+               display:inline-block;
+               width:30px;
+               height:30px;
+               margin-right: 15px;
+               background-image: url('../../assets/nocheck.png');
+               background-repeat: no-repeat;
+               background-size: cover;
+            //    vertical-align: middle;
+            }
+            .checked-img {
+                background-image: url('../../assets/success.jpg');
+
+            }
+            .color-font{
+                color:#D632C1;
+            }
+        }
+    }
+    //global
+    .form-msg{
+        width:638px;
+        margin:0 auto; 
+    }
+    .box{
+        margin:46px auto;
+        width:707px;
+        background:rgba(255,255,255,1);
+        box-shadow:0px 3px 14px 2px rgba(224,224,224,1); /*no*/
+        border-radius:12px; /*no*/
+    }
+    .me-con{
+        padding:22px;
+        margin:0 auto;
+        width:627px;
+        height:151px;
+        background-color: #f2f2f2;
+        resize: none;
+        border:none;
+        box-sizing: border-box;
+        font-size: 24px;
+        color:#939393;
+    }
+    .errorBorder{
+        border: 1px solid red !important; /*no*/
+        border-radius: 4px; /*no*/
+    }
+    .noBg{
+        background: none !important;
+    }
+    input {
+        font-size: 026px;
+    }
+    input:disabled, input[disabled]{ 
+        color: #919191; 
+        -webkit-text-fill-color:#919191; 
+        -webkit-opacity:1; 
+        opacity: 1; 
+    }
+}

@@ -16,6 +16,15 @@ const getFormItem = () => {
     });
 }
 
+//获取视频上传链接
+const getvideoLink = (body = {}) => {
+    return request("campusVideo", body);
+}
+//上传视频
+const uploadVideo = (url, formData) => {
+    return upload(url, formData);
+}
+
 const _products = [
     {"id": 1, "title": "iPad 4 Mini", "price": 500.01, "inventory": 2},
     {"id": 2, "title": "H&M T-Shirt White", "price": 10.99, "inventory": 10},

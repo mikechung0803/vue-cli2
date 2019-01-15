@@ -106,20 +106,6 @@ module.exports = {
           name: utils.assetsPath('fonts/[name].[ext]')
         }
       },
-      {
-        test: /\.ts$/,
-        exclude: /node_modules/,
-        enforce: 'pre',
-        loader: 'tslint-loader'
-      },
-      {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
-        options: {
-          appendTsSuffixTo: [/\.vue$/]
-        }
-      }
       // {
       //   test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
       //   loader: 'base64-font-loader'
