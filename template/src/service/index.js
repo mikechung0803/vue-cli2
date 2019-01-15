@@ -16,6 +16,11 @@ const getFormItem = () => {
     });
 }
 
+//报名信息上传
+const campusEnrollCommit = (body) => {
+    return request('campusEnrollCommit', body, "POST");
+}
+
 //获取视频上传链接
 const getvideoLink = (body = {}) => {
     return request("campusVideo", body);

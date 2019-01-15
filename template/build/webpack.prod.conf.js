@@ -34,30 +34,43 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-const env = require('../config/prod.env')
-const rules = [...utils.styleLoaders({
-  sourceMap: config.build.productionSourceMap,
-  extract: true,
-  usePostCSS: true
-})];
-if(globalRouterConfig.bundle) rules.push({
-  test: /\.js$/,
-  loader: './build/compile-replace-loader',
-  include: [resolve('src/router')],
-  options: {
-    regExp: globalRouterConfig.bundleRegExp,
-    value: ''
-  }
-})
-if(config.build.vueExternal) rules.push({
-  test: /\.js$/,
-  loader: './build/compile-replace-loader',
-  include: [resolve('src/router')],
-  options: {
-    regExp: globalRouterConfig.vuexRegExp,
-    value: ''
-  }
-})
+const env = require('../config/prod.env'),
+      rules = [...utils.styleLoaders({
+        sourceMap: config.build.productionSourceMap,
+        extract: true,
+        usePostCSS: true
+      })],
+      copyJsIngore =  ['*.map', 'less.min.js'];
+
+if (globalRouterConfig.bundle) {
+  rules.push({
+    test: /\.js$/,
+    loader: './build/compile-replace-loader',
+    include: [resolve('src/router')],
+    options: {
+      regExp: globalRouterConfig.bundleRegExp,
+      value: ''
+    }
+  })
+} else {
+  copyJsIngore.push('bundle.min.js');
+}
+
+if (config.build.vueExternal) {
+  rules.push({
+    test: /\.js$/,
+    loader: './build/compile-replace-loader',
+    include: [resolve('src/router')],
+    options: {
+      regExp: globalRouterConfig.vuexRegExp,
+      value: ''
+    }
+  })
+} else {
+  copyJsIngore.push('vue.min.js')
+  copyJsIngore.push('vue-router.min.js')
+  copyJsIngore.push('vuex.min.js')
+}
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -188,7 +201,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       {
         from: path.resolve(__dirname, '../static', 'js'),
         to: path.resolve(config.build.assetsRoot, config.build.assetsSubDirectory, 'js'),
-        ignore: ['*.map']
+        ignore: copyJsIngore
       },
       {
         from: path.resolve(__dirname, '../static', 'css'),
