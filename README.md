@@ -4,6 +4,17 @@
 
 > This template is Vue 2.0 compatible. For Vue 1.x use this command: `vue init webpack#1.0 my-project`
 
+
+# Vue-cli 3 is here, so this template is now considered deprecated.
+
+This template was the main template for vue-cli verison 2.*.
+
+Now that we have released a [stable version of vue-cli 3](https://cli.vuejs.org), which incorporates all features that this template offers (and much more), we think that this template doesn't have any significant use for the future, so we won't put much resource in developing it further.
+
+We will try and fix major issues should they arise, but not much more.
+
+Feel free to fork this template if you want to keep it alive.
+
 ## Documentation
 
 - [For this template](http://vuejs-templates.github.io/webpack): common questions specific to this template are answered and each part is described in greater detail
@@ -15,7 +26,7 @@ This is a project template for [vue-cli](https://github.com/vuejs/vue-cli). **It
 
 ``` bash
 $ npm install -g vue-cli
-$ vue init webpack my-project
+$ vue init mikechung0803/vue-template my-project
 $ cd my-project
 $ npm install
 $ npm run dev
@@ -30,6 +41,18 @@ $ vue init webpack#develop my-project
 :warning: **The develop branch is not considered stable and can contain bugs or not build at all, so use at your own risk.**
 
 The development server will run on port 8080 by default. If that port is already in use on your machine, the next free port will be used.
+
+### In Addition
+
+#### vuex
+> add `vuex` option at initialization time, it will create `src/store` folder, and it had configed, like this:
+
+```
+src
+├──store
+   ├──modules
+   ├──index.js
+```
 
 ## What's Included
 

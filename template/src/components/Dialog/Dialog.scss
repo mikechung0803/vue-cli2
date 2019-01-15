@@ -1,0 +1,52 @@
+.dialog-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    .dialog {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: px2rem(653);
+        height: px2rem(1100);
+        border-radius: px2rem(10);
+        background-color: #fff;
+        &-title {
+            position: relative;
+            padding: px2rem(25) 0;
+            height: px2rem(80);
+            text-align: center;
+            font-size: px2rem(30);
+            font-weight: 400;
+            color: rgba(0, 0, 0, 1);
+            line-height: px2rem(29);
+            border-bottom: 1px dashed #999999;
+            .close {
+                position: absolute;
+                right: px2rem(40);
+                display: inline-block;
+                width: px2rem(26);
+                height: px2rem(26);
+                background: url('../../assets/icon-close.png') no-repeat;
+                background-size: 100%;
+            }
+        }
+        &-con {
+            margin: px2rem(38) auto;
+            width: px2rem(590);
+            height: px2rem(947);
+            font-size: px2rem(24);
+            color: #727171;
+            overflow: hidden;
+            font-family:sans-serif;
+            word-break: break-all;
+            /deep/ p{
+                margin:5px 0;
+            }
+        }
+    }
+}
