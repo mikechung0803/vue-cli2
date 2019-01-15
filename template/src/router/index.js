@@ -6,10 +6,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import {globalRouterConfig} from '@/config'
+{{#vuex}}
 //vuex
 import Vuex from 'vuex'
 window.Vuex = Vuex
 //vuex
+{{/vuex}}
 
 //bundle
 if(!globalRouterConfig.bundle){
@@ -22,7 +24,9 @@ var Pages = require('@/pages'),
     Index = Pages.Index,
     Form  = Pages.Form,
     Media = Pages.Media,
+    {{#vuex}}
     Store = Pages.Vuex,
+    {{/vuex}}
     Exception = Pages.Exception;
 //router-sync
 
@@ -31,7 +35,9 @@ var Pages = require('@/pages'),
 var Index = resolve => require.ensure([], () => resolve(require('@/pages/Index/index.vue')), 'Index'), // webpack方案，ensure第一个数组为依赖文件
     Form = resolve => require.ensure([], () => resolve(require('@/pages/Form')), 'Form'),
     Media = resolve => require.ensure([], () => resolve(require('@/pages/Media')), 'Media'),
+    {{#vuex}}
     Store = resolve => require.ensure([], () => resolve(require('@/pages/Vuex')), 'Vuex'),
+    {{/vuex}}
     Exception = resolve => require.ensure([], () => resolve(require('@/pages/Exception')), 'Exception')
 //router-async
 
@@ -66,15 +72,17 @@ export default new Router({
       name: 'Media',
       component: Media
     },
+    {{#vuex}}
     {
       path: '/vuex',
       name: 'Store',
       component: Store
     },
+    {{/vuex}}
     {
       path: '/exception',
       name: 'Exception',
       component: Exception
-    },
+    }
   ]
 })

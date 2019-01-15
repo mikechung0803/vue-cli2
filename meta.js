@@ -178,7 +178,7 @@ module.exports = {
     'src/router/**/*': 'router',
     'src/store/**/*': 'vuex', //追加store目录
     'src/components/ProductList/**/*': 'vuex',
-    'src/components/ShoppingCar/**/*': 'vuex',
+    'src/components/ShoppingCart/**/*': 'vuex',
     'src/pages/Vuex/**/*': 'vuex'
   },
   complete: function(data, { chalk }) {
