@@ -26,7 +26,7 @@ This is a project template for [vue-cli](https://github.com/vuejs/vue-cli). **It
 
 ``` bash
 $ npm install -g vue-cli
-$ vue init webpack my-project
+$ vue init mikechung0803/vue-template my-project
 $ cd my-project
 $ npm install
 $ npm run dev
@@ -41,6 +41,18 @@ $ vue init webpack#develop my-project
 :warning: **The develop branch is not considered stable and can contain bugs or not build at all, so use at your own risk.**
 
 The development server will run on port 8080 by default. If that port is already in use on your machine, the next free port will be used.
+
+### In Addition
+
+#### vuex
+> add `vuex` option at initialization time, it will create `src/store` folder, and it had configed, like this:
+
+```
+src
+├──store
+   ├──modules
+   ├──index.js
+```
 
 ## What's Included
 
