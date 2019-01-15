@@ -3,12 +3,15 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 {{/if_eq}}
 import Vue from 'vue'
-import App from './App'
+import App from '@/App'
 {{#router}}
-import router from './router'
+import router from '@/router'
 {{/router}}
-
-Vue.config.productionTip = false
+{{#vuex}}
+import store from '@/store'
+{{/vuex}}
+import Components from 'components'
+Vue.use(Components)
 
 /* eslint-disable no-new */
 new Vue({
@@ -16,6 +19,9 @@ new Vue({
   {{#router}}
   router,
   {{/router}}
+  {{#vuex}}
+  store
+  {{/vuex}}
   {{#if_eq build "runtime"}}
   render: h => h(App)
   {{/if_eq}}

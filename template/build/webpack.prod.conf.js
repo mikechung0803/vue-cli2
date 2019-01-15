@@ -7,37 +7,82 @@ const merge = require('webpack-merge')
 const baseWebpackConfig = require('./webpack.base.conf')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlReplaceWebpackPlugin = require('html-replace-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const globalRouterConfig = require('../src/config').globalRouterConfig
+const ENV = process.argv[process.argv.length -1]
 
-const env = {{#if_or unit e2e}}process.env.NODE_ENV === 'testing'
-  ? require('../config/test.env')
-  : {{/if_or}}require('../config/prod.env')
+console.log('dev config.build.ENV：', ENV);
+
+// file types & file links
+const resource = {
+  js: {
+    vue: 'js/vue.min.js',
+    'vue-router': 'js/vue-router.min.js',
+    vuex: 'js/vuex.min.js'
+  }
+},
+tpl = {
+  img: '<img src="%s">',
+  css: '<link rel="stylesheet" type="text/css" href="%s">',
+  js: '<script type="text/javascript" src="%s"></script>'
+}
+
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
+const env = require('../config/prod.env')
+const rules = [...utils.styleLoaders({
+  sourceMap: config.build.productionSourceMap,
+  extract: true,
+  usePostCSS: true
+})];
+if(globalRouterConfig.bundle) rules.push({
+  test: /\.js$/,
+  loader: './build/compile-replace-loader',
+  include: [resolve('src/router')],
+  options: {
+    regExp: globalRouterConfig.bundleRegExp,
+    value: ''
+  }
+})
+if(config.build.vueExternal) rules.push({
+  test: /\.js$/,
+  loader: './build/compile-replace-loader',
+  include: [resolve('src/router')],
+  options: {
+    regExp: globalRouterConfig.vuexRegExp,
+    value: ''
+  }
+})
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
-    rules: utils.styleLoaders({
-      sourceMap: config.build.productionSourceMap,
-      extract: true,
-      usePostCSS: true
-    })
+    rules: rules
   },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     path: config.build.assetsRoot,
-    filename: utils.assetsPath('js/[name].[chunkhash].js'),
-    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+    filename: utils.assetsPath('js/[name].js'),
+    chunkFilename: utils.assetsPath('js/[id].js')
   },
+  externals: config.build.vueExternal ? config.build.vueExternals : {},
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
-      'process.env': env
+      'process.env': env,
+      ENV: JSON.stringify(ENV) || ''
     }),
     new UglifyJsPlugin({
       uglifyOptions: {
         compress: {
-          warnings: false
+          warnings: false, // 去除warning警告
+          drop_debugger: true, // 发布时去除debugger语句
+          drop_console: true, // 发布时去除console语句
+          pure_funcs: ['console.log'], // 配置发布时，不被打包的函数
         }
       },
       sourceMap: config.build.productionSourceMap,
@@ -45,7 +90,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
     // extract css into its own file
     new ExtractTextPlugin({
-      filename: utils.assetsPath('css/[name].[contenthash].css'),
+      filename: utils.assetsPath('css/[name].css'),
       // Setting the following option to `false` will not extract CSS from codesplit chunks.
       // Their CSS will instead be inserted dynamically with style-loader when the codesplit chunk has been loaded by webpack.
       // It's currently set to `true` because we are seeing that sourcemaps are included in the codesplit bundle as well when it's `false`, 
@@ -63,21 +108,47 @@ const webpackConfig = merge(baseWebpackConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: {{#if_or unit e2e}}process.env.NODE_ENV === 'testing'
-        ? 'index.html'
-        : {{/if_or}}config.build.index,
+      filename: config.build.index,
       template: 'index.html',
       inject: true,
       minify: {
         removeComments: true,
         collapseWhitespace: true,
-        removeAttributeQuotes: true
+        removeAttributeQuotes: false
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       chunksSortMode: 'dependency'
     }),
+    // Replace html contents with string or regex patterns
+    new HtmlReplaceWebpackPlugin([
+      {
+        pattern: 'static/',
+        replacement: ''
+      },
+      {
+        pattern: /(<!--\s*|@@)(css|js|img):([\w-\/]+)(\s*-->)?/g,
+        replacement: function(match, $1, type, file, $4, index, input) {
+          if(resource[type][file]) {
+            // those formal parameters could be:
+            // match: <-- js:unify -->
+            // type: js
+            // file: unify
+            // Then fetch js script from some resource object
+            // var url = resources['js']['unify']
+            if(!config.build.vueExternal && (file.indexOf('vue') > -1)) {
+              return match 
+            }else {
+              var url = resource[type][file]
+              return $4 == undefined ? url : tpl[type].replace('%s', url)
+            }
+          } else {
+            return match
+          }
+        }
+      }
+    ]),
     // keep module.id stable when vendor modules does not change
     new webpack.HashedModuleIdsPlugin(),
     // enable scope hoisting
@@ -115,8 +186,13 @@ const webpackConfig = merge(baseWebpackConfig, {
     // copy custom static assets
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, '../static'),
-        to: config.build.assetsSubDirectory,
+        from: path.resolve(__dirname, '../static', 'js'),
+        to: path.resolve(config.build.assetsRoot, config.build.assetsSubDirectory, 'js'),
+        ignore: ['*.map']
+      },
+      {
+        from: path.resolve(__dirname, '../static', 'css'),
+        to: path.resolve(config.build.assetsRoot, config.build.assetsSubDirectory, 'css'),
         ignore: ['.*']
       }
     ])

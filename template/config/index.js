@@ -1,5 +1,5 @@
 'use strict'
-// Template version: {{ template_version }}
+// Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
@@ -10,25 +10,26 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/spreeGeneralUserCheckExecute': {
+          target: 'http://newchannelsoa.m.jd.com',
+          changeOrigin: true,
+          pathRewrite: {
+              '^/spreeGeneralUserCheckExecute': '/spreeGeneralUserCheckExecute'
+          },
+      },
+    },
+
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
-    autoOpenBrowser: false,
+    autoOpenBrowser: true,
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    {{#lint}}// Use Eslint Loader?
-    // If true, your code will be linted during bundling and
-    // linting errors and warnings will be shown in the console.
-    useEslint: true,
-    // If true, eslint errors and warnings will also be shown in the error overlay
-    // in the browser.
-    showEslintErrorsInOverlay: false,
-    {{/lint}}
-
+    
     /**
      * Source Maps
      */
@@ -45,19 +46,25 @@ module.exports = {
   },
 
   build: {
+    // vue、VueRouter外部加载，verndor瘦身
+    vueExternal: true,
+    vueExternals: {
+      'vue': 'Vue',
+      'vue-router': 'VueRouter',
+    },
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: '',
     assetsPublicPath: '/',
 
     /**
      * Source Maps
      */
 
-    productionSourceMap: true,
+    productionSourceMap: false,
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',
 

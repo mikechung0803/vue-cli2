@@ -1,16 +1,17 @@
 .DS_Store
 node_modules/
 /dist/
+/out/
+/doc/
+/docs/
+/jsdoc/
+/jsdocs/
+/vuedoc/
+/vuedocs/
+dist.zip
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-{{#unit}}
-/test/unit/coverage/
-{{/unit}}
-{{#e2e}}
-/test/e2e/reports/
-selenium-debug.log
-{{/e2e}}
 
 # Editor directories and files
 .idea
@@ -19,3 +20,4 @@ selenium-debug.log
 *.ntvs*
 *.njsproj
 *.sln
+*.map
