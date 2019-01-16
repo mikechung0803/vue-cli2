@@ -1,7 +1,6 @@
 /**
  * 图片处理
  * @module image
- * @author zhongxianyu
  */
 
 import EXIF from "exif-js";

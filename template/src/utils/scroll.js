@@ -1,7 +1,6 @@
 /**
  * 滚动相关处理
  * @module scroll
- * @author zhongxianyu
  */
 
  /**

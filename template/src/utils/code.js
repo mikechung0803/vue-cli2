@@ -1,6 +1,5 @@
 /**
  * 关于包含数字字母等字符类的处理
- * @author zhongxianyu
  * @module code
  */
 
