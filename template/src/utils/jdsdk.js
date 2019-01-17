@@ -1,7 +1,6 @@
 /**
  * jd特有功能
  * @module jdsdk
- * @author zhongxianyu
  */
 
 /**

@@ -17,12 +17,13 @@ console.log('dev config.build.ENV：', ENV)
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
+    // css、scss、sass、less、stylus、styl、px2rem规则
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
   },
   // cheap-module-eval-source-map is faster for development
   devtool: config.dev.devtool,
 
-  // these devServer options should be customized in /config/index.js
+  // 在 /config/index.js 中自定义代理配置项
   devServer: {
     clientLogLevel: 'warning',
     historyApiFallback: {
@@ -35,7 +36,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     compress: true,
     host: HOST || config.dev.host,
     port: PORT || config.dev.port,
-    open: config.dev.autoOpenBrowser,
+    open: config.dev.autoOpenBrowser, // 本地调试环境启动后是否自定打开页面
     overlay: config.dev.errorOverlay
       ? { warnings: false, errors: true }
       : false,
@@ -46,14 +47,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       poll: config.dev.poll,
     }
   },
+  // 自定义全局变量，注意：string也需要用JSON.stringify()
   plugins: [
     new webpack.DefinePlugin({
       'process.env': require('../config/dev.env'),
       ENV: JSON.stringify(ENV) || ''
     }),
-    new webpack.HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacementPlugin(), // 热更新插件
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
-    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(), // 不触发错误,即编译后运行的包正常运行
     // https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: 'index.html',
@@ -83,6 +85,7 @@ module.exports = new Promise((resolve, reject) => {
       devWebpackConfig.devServer.port = port
 
       // Add FriendlyErrorsPlugin
+      // 友好的错误提示
       devWebpackConfig.plugins.push(new FriendlyErrorsPlugin({
         compilationSuccessInfo: {
           messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],

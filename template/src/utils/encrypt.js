@@ -1,7 +1,6 @@
 /**
  * 加密处理
  * @module encrpt
- * @author zhongxianyu
  */
 
 import jsSHA from "jssha"

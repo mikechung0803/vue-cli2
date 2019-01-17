@@ -1,7 +1,6 @@
 /**
  * 公共方法
  * @module common
- * @author zhongxianyu
  */
 
 /**

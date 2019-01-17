@@ -29,9 +29,16 @@ exports.cssLoaders = function (options) {
     }
   }
 
+  const px2remLoader = {
+    loader: 'px2rem-loader',
+    options: {
+      remUnit: 100
+    }
+  }
+
   // generate loader string to be used with extract text plugin
   function generateLoaders (loader, loaderOptions) {
-    const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader]
+    const loaders = options.usePostCSS ? [cssLoader, postcssLoader, px2remLoader] : [cssLoader, px2remLoader]
 
     if (loader) {
       loaders.push({
@@ -44,10 +51,10 @@ exports.cssLoaders = function (options) {
 
     // Extract CSS when that option is specified
     // (which is the case during production build)
-    if (options.extract) {
-      return ExtractTextPlugin.extract({
-        use: loaders,
-        fallback: 'vue-style-loader'
+    if (options.extract) { // 如果传入的options存在extract且为true
+      return ExtractTextPlugin.extract({  // ExtractTextPlugin分离js中引入的css文件
+        use: loaders,  // 处理的loader
+        fallback: 'vue-style-loader' // 没有被提取分离时使用的loader
       })
     } else {
       return ['vue-style-loader'].concat(loaders)

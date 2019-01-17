@@ -1,7 +1,6 @@
 /**
  * form表单处理
  * @module form
- * @author zhongxianyu
  */
 
 /**

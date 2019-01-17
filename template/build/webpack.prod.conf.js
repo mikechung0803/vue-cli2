@@ -16,7 +16,7 @@ const ENV = process.argv[process.argv.length -1]
 
 console.log('dev config.build.ENV：', ENV);
 
-// file types & file links
+// index.html页特定注释被替换成相应的script的映射配置
 const resource = {
   js: {
     vue: 'js/vue.min.js',
@@ -30,34 +30,52 @@ tpl = {
   js: '<script type="text/javascript" src="%s"></script>'
 }
 
+// 转换绝对地址
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-const env = require('../config/prod.env')
-const rules = [...utils.styleLoaders({
-  sourceMap: config.build.productionSourceMap,
-  extract: true,
-  usePostCSS: true
-})];
-if(globalRouterConfig.bundle) rules.push({
-  test: /\.js$/,
-  loader: './build/compile-replace-loader',
-  include: [resolve('src/router')],
-  options: {
-    regExp: globalRouterConfig.bundleRegExp,
-    value: ''
-  }
-})
-if(config.build.vueExternal) rules.push({
-  test: /\.js$/,
-  loader: './build/compile-replace-loader',
-  include: [resolve('src/router')],
-  options: {
-    regExp: globalRouterConfig.vuexRegExp,
-    value: ''
-  }
-})
+const env = require('../config/prod.env'),
+      // css、scss、sass、less、stylus、styl、px2rem规则
+      rules = [...utils.styleLoaders({
+        sourceMap: config.build.productionSourceMap,
+        extract: true,
+        usePostCSS: true
+      })],
+      // 忽略拷贝 /static/js 下的特定文件配置项
+      copyJsIngore =  ['*.map', 'less.min.js'];
+
+// 如果使用外链bundle则抹掉import的代码，如果不使用则抹除index.html的script及打包拷贝文件
+if (globalRouterConfig.bundle) {
+  rules.push({
+    test: /\.js$/,
+    loader: './build/compile-replace-loader',
+    include: [resolve('src/router')],
+    options: {
+      regExp: globalRouterConfig.bundleRegExp,
+      value: ''
+    }
+  })
+} else {
+  copyJsIngore.push('bundle.min.js');
+}
+
+// 如果使用外链vue、vuex、vue-router则打包剥离，如果不使用则不加入index.html的script及打包拷贝文件
+if (config.build.vueExternal) {
+  rules.push({
+    test: /\.js$/,
+    loader: './build/compile-replace-loader',
+    include: [resolve('src/router')],
+    options: {
+      regExp: globalRouterConfig.vuexRegExp,
+      value: ''
+    }
+  })
+} else {
+  copyJsIngore.push('vue.min.js')
+  copyJsIngore.push('vue-router.min.js')
+  copyJsIngore.push('vuex.min.js')
+}
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -66,9 +84,11 @@ const webpackConfig = merge(baseWebpackConfig, {
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     path: config.build.assetsRoot,
-    filename: utils.assetsPath('js/[name].js'),
-    chunkFilename: utils.assetsPath('js/[id].js')
+    filename: utils.assetsPath('js/[name].js'), // name为entry入口key值
+    // 默认为[id].[chunkhash].js，即0.[chunkhash].js……配合vue-router懒加载可以设置chunkName，还可设置相同chunkName打包到一起
+    chunkFilename: utils.assetsPath('js/[id].[name].js')
   },
+  // 剥离的依赖代码块
   externals: config.build.vueExternal ? config.build.vueExternals : {},
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
@@ -85,20 +105,22 @@ const webpackConfig = merge(baseWebpackConfig, {
           pure_funcs: ['console.log'], // 配置发布时，不被打包的函数
         }
       },
+      // .map文件记录了压缩丑化后的代码映射信息，报错可以追溯到源文件
       sourceMap: config.build.productionSourceMap,
       parallel: true
     }),
-    // extract css into its own file
+    // 将js中引入的css分离的插件
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].css'),
       // Setting the following option to `false` will not extract CSS from codesplit chunks.
       // Their CSS will instead be inserted dynamically with style-loader when the codesplit chunk has been loaded by webpack.
       // It's currently set to `true` because we are seeing that sourcemaps are included in the codesplit bundle as well when it's `false`, 
       // increasing file size: https://github.com/vuejs-templates/webpack/issues/1110
-      allChunks: true,
+      allChunks: true, // 当使用 `CommonsChunkPlugin` 并且在公共chunk中有提取的chunk时，allChunks必须设置为true
     }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
+    // 压缩提取出的css，并解决ExtractTextPlugin分离出的js重复问题(多个文件引入同一css文件)
     new OptimizeCSSPlugin({
       cssProcessorOptions: config.build.productionSourceMap
         ? { safe: true, map: { inline: false } }
@@ -108,20 +130,20 @@ const webpackConfig = merge(baseWebpackConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: config.build.index,
-      template: 'index.html',
-      inject: true,
+      filename: config.build.index, // 用于生成的HTML文件的名称，默认是index.html。你可以在这里指定子目录（例如:assets/admin.html）
+      template: 'index.html', // 模板的路径。支持加载器，例如 html!./index.html
+      inject: true, // 注入的js文件将会被放在body标签中,当值为'head'时，将被放在head标签中
       minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeAttributeQuotes: false
+        removeComments: true, // 删除html中的注释代码
+        collapseWhitespace: true,  // 删除html中的空白符
+        removeAttributeQuotes: true  // 删除html元素中属性的引号
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       chunksSortMode: 'dependency'
     }),
-    // Replace html contents with string or regex patterns
+    // 替换index.html中特定的注释信息
     new HtmlReplaceWebpackPlugin([
       {
         pattern: 'static/',
@@ -153,11 +175,11 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.HashedModuleIdsPlugin(),
     // enable scope hoisting
     new webpack.optimize.ModuleConcatenationPlugin(),
-    // split vendor js into its own file
+    // 分离公共js到vendor中
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
+      name: 'vendor', // 文件名
       minChunks (module) {
-        // any required modules inside node_modules are extracted to vendor
+        // 所有node_modules里的模块打包到当前文件里
         return (
           module.resource &&
           /\.js$/.test(module.resource) &&
@@ -167,8 +189,8 @@ const webpackConfig = merge(baseWebpackConfig, {
         )
       }
     }),
-    // extract webpack runtime and module manifest to its own file in order to
-    // prevent vendor hash from being updated whenever app bundle is updated
+    // 上面虽然已经分离了第三方库,每次修改编译都会改变vendor的hash值，导致浏览器缓存失效。原因是vendor包含了webpack在打包过程中会产生一些运行时代码，运行时代码中实际上保存了打包后的文件名。当修改业务代码时,业务代码的js文件的hash值必然会改变。一旦改变必然会导致vendor变化。vendor变化会导致其hash值变化。
+    // 下面主要是将运行时代码提取到单独的manifest文件中，防止其影响vendor.js
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
       minChunks: Infinity
@@ -183,12 +205,12 @@ const webpackConfig = merge(baseWebpackConfig, {
       minChunks: 3
     }),
 
-    // copy custom static assets
+    // 拷贝static文件夹下的资源
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, '../static', 'js'),
         to: path.resolve(config.build.assetsRoot, config.build.assetsSubDirectory, 'js'),
-        ignore: ['*.map']
+        ignore: copyJsIngore // 忽略拷贝的文件
       },
       {
         from: path.resolve(__dirname, '../static', 'css'),
@@ -198,21 +220,22 @@ const webpackConfig = merge(baseWebpackConfig, {
     ])
   ]
 })
-
+// 配置文件开启了gzip压缩
 if (config.build.productionGzip) {
+  // 引入压缩文件的组件,该插件会对生成的文件进行压缩，生成一个.gz文件
   const CompressionWebpackPlugin = require('compression-webpack-plugin')
 
   webpackConfig.plugins.push(
     new CompressionWebpackPlugin({
-      asset: '[path].gz[query]',
-      algorithm: 'gzip',
-      test: new RegExp(
+      asset: '[path].gz[query]', // 目标文件名
+      algorithm: 'gzip', // 使用gzip压缩
+      test: new RegExp( // 满足正则表达式的文件会被压缩
         '\\.(' +
         config.build.productionGzipExtensions.join('|') +
         ')$'
       ),
-      threshold: 10240,
-      minRatio: 0.8
+      threshold: 10240, // 资源文件大于10240B=10kB时会被压缩
+      minRatio: 0.8 // 最小压缩比达到0.8时才会被压缩
     })
   )
 }

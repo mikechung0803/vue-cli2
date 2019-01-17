@@ -18,6 +18,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-    @import './index'
+<style lang="less" scoped>
+    @import './index';
 </style>

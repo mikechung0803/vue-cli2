@@ -1,7 +1,6 @@
 /**
  * url相关处理
  * @module url
- * @author zhongxianyu
  */
 
 /**

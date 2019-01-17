@@ -3,7 +3,7 @@
         <li
         v-for="product in products"
         :key="product.id">
-        {{ product.title }} - {{ product.price | currency }}
+        {{ product.title }} - {{ product.price }}
         <br>
         <button
             :disabled="!product.inventory"

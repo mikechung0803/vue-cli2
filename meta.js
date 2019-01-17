@@ -69,23 +69,6 @@ module.exports = {
         },
       ],
     },
-    cssLoader: {
-      when: 'isNotTest',
-      type: 'list',
-      message: 'Use less or scss loader?',
-      choices: [
-        {
-          name: 'less loader',
-          value: 'less',
-          short: 'less',
-        },
-        {
-          name: 'scss loader',
-          value: 'scss',
-          short: 'scss',
-        },
-      ],
-    },
     router: {
       when: 'isNotTest',
       type: 'confirm',
@@ -193,11 +176,10 @@ module.exports = {
     'test/unit/setup.js': "unit && runner === 'jest'",
     'test/e2e/**/*': 'e2e',
     'src/router/**/*': 'router',
-    'src/sotre/**/*': 'vuex', //追加store目录
-    'src/pages/components/ProductList/**/*': 'vuex',
-    'src/pages/components/ShoppingCar/**/*': 'vuex',
-    'src/**/*.less': "cssLoader === 'less'",
-    'src/**/*.scss': "cssLoader === 'scss'"
+    'src/store/**/*': 'vuex', //追加store目录
+    'src/components/ProductList/**/*': 'vuex',
+    'src/components/ShoppingCart/**/*': 'vuex',
+    'src/pages/Vuex/**/*': 'vuex'
   },
   complete: function(data, { chalk }) {
     const green = chalk.green

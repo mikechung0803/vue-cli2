@@ -1,7 +1,6 @@
 /**
  * 视频相关处理
  * @module video
- * @author zhongxianyu
  */
 
 /**
